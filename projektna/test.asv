@@ -1,0 +1,32 @@
+
+mase = [1; 1];
+polozaji = [0 0 0; 1 0 0];
+hitrosti = [0 0 0; 0 0 0];
+
+n = 10000;
+tk = 10;
+t = linspace(0,tk,n);
+
+G = 6.672 * 10^(-11);
+
+x = polozaji(:,1);
+y = polozaji(:,2);
+z = polozaji(:,3);
+
+dx = x' - x;
+dy = y' - y;
+dz = z' - z;
+
+softening = 0.001;
+inv_r3 = (dx.^2 + dy.^2 + dz.^2 + softening.^2).^(-3/2);
+
+inv_r3(inv_r3 == Inf) = 0;
+
+pospesek(1, mase, polozaji);
+
+f = @(t, r) pospesek(t, mase, r);
+F = @(t,Y) [Y(2), f(t, Y(1))]';
+
+%[~, Y] = ode45(@(t,Y) F(t,Y), t, [polozaji hitrosti]);
+
+%[r, v] = vrni_resitev(mase, polozaji, hitrosti, tk)
